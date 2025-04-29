@@ -1,0 +1,78 @@
+package com.hotelmanagement.microservices.room.servicetest;
+
+import com.hotelmanagement.microservices.room.dto.BookingDTO;
+import com.hotelmanagement.microservices.room.dto.RoomDTO;
+import com.hotelmanagement.microservices.room.entity.BookingEntity;
+import com.hotelmanagement.microservices.room.entity.RoomEntity;
+import com.hotelmanagement.microservices.room.repository.BookingRepository;
+import com.hotelmanagement.microservices.room.repository.RoomRepository;
+import com.hotelmanagement.microservices.room.service.RoomService;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.internal.matchers.Any;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
+
+import java.util.List;
+
+@ExtendWith(MockitoExtension.class)
+public class RoomServiceTest {
+
+    @Mock
+    private RoomRepository roomRepository;
+
+    @Mock
+    private BookingRepository bookingRepository;
+
+    @Mock
+    private ModelMapper modelMapper;
+
+    @InjectMocks
+    private RoomService roomService;
+
+    @Test
+    void testCreateRoom() {
+        RoomDTO roomDTO = new RoomDTO();
+        RoomEntity roomEntity = new RoomEntity();
+        Mockito.when(modelMapper.map(roomDTO, RoomEntity.class)).thenReturn(roomEntity);
+        Mockito.when(roomRepository.save(roomEntity)).thenReturn(roomEntity);
+        Mockito.when(modelMapper.map(roomEntity, RoomDTO.class)).thenReturn(roomDTO);
+        RoomDTO result = roomService.createRoom(roomDTO);
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    void testGetRoomByNumber() {
+        RoomEntity roomEntity = new RoomEntity();
+        RoomDTO roomDTO = new RoomDTO();
+        Mockito.when(roomRepository.findByRoomNumber(101)).thenReturn(roomEntity);
+        Mockito.when(modelMapper.map(roomEntity, RoomDTO.class)).thenReturn(roomDTO);
+        RoomDTO result = roomService.getRoomByNumber(101);
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    void testDeleteRoom() {
+        RoomEntity roomEntity = new RoomEntity();
+        Mockito.when(roomRepository.findByRoomNumber(101)).thenReturn(roomEntity);
+        String result = roomService.deleteRoom(101);
+        Assertions.assertEquals("Room details of room number 101 deleted", result);
+    }
+
+    @Test
+    void testBookRooms() {
+        BookingDTO bookingDTO = new BookingDTO();
+        bookingDTO.setRoomNumbers(List.of(101, 102));
+
+        Mockito.when(modelMapper.map(bookingDTO, BookingEntity.class))
+                .thenReturn(new BookingEntity());
+
+        String result = roomService.bookRooms(bookingDTO);
+        Assertions.assertEquals("Bookings Confirmed!", result);
+    }
+}
+

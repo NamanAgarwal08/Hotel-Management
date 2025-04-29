@@ -5,6 +5,9 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/guest/pom.xml" />
+        <option value="$PROJECT_DIR$/guest-reservation/pom.xml" />
+        <option value="$PROJECT_DIR$/room/pom.xml" />
+        <option value="$PROJECT_DIR$/eureka-server/pom.xml" />
       </list>
     </option>
   </component>
