@@ -1,10 +1,12 @@
 package com.hotelmanagement.microservices.guestreservation.service;
 
-import com.hotelmanagement.microservices.guestreservation.configuration.EurekaProxy;
+import com.hotelmanagement.microservices.guestreservation.config.EurekaProxy;
 import com.hotelmanagement.microservices.guestreservation.dto.BookingDTO;
 import com.hotelmanagement.microservices.guestreservation.dto.ReservationDTO;
 import com.hotelmanagement.microservices.guestreservation.entity.ReservationEntity;
+import com.hotelmanagement.microservices.guestreservation.exception.ResourceNotFoundException;
 import com.hotelmanagement.microservices.guestreservation.repository.ReservationRepository;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Service
 public class ReservationService implements ReservationServiceInterface{
+
+
 
     @Autowired
     ReservationRepository reservationRepository;
@@ -37,13 +41,13 @@ public class ReservationService implements ReservationServiceInterface{
 
     @Override
     public ReservationDTO getReservations(Long id) {
-        ReservationEntity foundReservation = reservationRepository.findById(id).orElseThrow(()-> new RuntimeException("No reservation found with the provided id: " + id));
+        ReservationEntity foundReservation = reservationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("No reservation found with the provided id: " + id));
         return modelMapper.map(foundReservation, ReservationDTO.class);
     }
 
     @Override
     public ReservationDTO updateReservationDetails(Long id, ReservationDTO reservationDTO) {
-        ReservationEntity foundReservation = reservationRepository.findById(id).orElseThrow(()-> new RuntimeException("No reservation found with the provided id: " + id));
+        ReservationEntity foundReservation = reservationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("No reservation found with the provided id: " + id));
         modelMapper.map(reservationDTO,foundReservation);
 
         reservationRepository.save(foundReservation);
@@ -53,7 +57,7 @@ public class ReservationService implements ReservationServiceInterface{
 
     @Override
     public String deleteReservation(Long id) {
-        ReservationEntity foundReservation = reservationRepository.findById(id).orElseThrow(()-> new RuntimeException("No reservation found with the provided id: " + id));
+        ReservationEntity foundReservation = reservationRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("No reservation found with the provided id: " + id));
 
         reservationRepository.delete(foundReservation);
 
@@ -62,7 +66,8 @@ public class ReservationService implements ReservationServiceInterface{
 
     @Override
     public String bookRooms(BookingDTO bookingDTO) {
-        return eurekaProxy.bookRooms(bookingDTO);
+        return eurekaProxy.bookRooms(bookingDTO).getBody().getData();
     }
+
 
 }

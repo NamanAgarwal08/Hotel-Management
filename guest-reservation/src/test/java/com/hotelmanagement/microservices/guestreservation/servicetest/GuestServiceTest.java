@@ -1,4 +1,4 @@
-package com.hotelmanagement.microservices.guestreservation.testingservices;
+package com.hotelmanagement.microservices.guestreservation.servicetest;
 
 import com.hotelmanagement.microservices.guestreservation.dto.GuestDTO;
 import com.hotelmanagement.microservices.guestreservation.service.GuestService;

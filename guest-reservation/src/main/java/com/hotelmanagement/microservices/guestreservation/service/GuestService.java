@@ -2,6 +2,7 @@ package com.hotelmanagement.microservices.guestreservation.service;
 
 import com.hotelmanagement.microservices.guestreservation.dto.GuestDTO;
 import com.hotelmanagement.microservices.guestreservation.entity.GuestEntity;
+import com.hotelmanagement.microservices.guestreservation.exception.ResourceNotFoundException;
 import com.hotelmanagement.microservices.guestreservation.repository.GuestRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +34,15 @@ public class GuestService implements GuestServiceInterface{
     }
 
     @Override
-    public GuestDTO getGuest(Long id) {
-        GuestEntity foundEntity = guestRepository.findById(id).orElseThrow(() -> new RuntimeException("No guest details found with id: " + id));
+    public GuestDTO getGuest(String email) {
+        GuestEntity foundEntity = guestRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("No guest details found with email: " + email));
 
         return modelMapper.map(foundEntity, GuestDTO.class);
     }
 
     @Override
     public GuestDTO updateGuest(Long id, GuestDTO newDto) {
-        GuestEntity foundEntity = guestRepository.findById(id).orElseThrow(() -> new RuntimeException("No guest details found with id: " + id));
+        GuestEntity foundEntity = guestRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No guest details found with id: " + id));
 
         modelMapper.map(newDto, foundEntity);
         GuestEntity updatedEntity = guestRepository.save(foundEntity);
@@ -51,7 +52,7 @@ public class GuestService implements GuestServiceInterface{
 
     @Override
     public String deleteGuest(Long id) {
-        GuestEntity foundEntity = guestRepository.findById(id).orElseThrow(() -> new RuntimeException("No guest details found with id: " + id));
+        GuestEntity foundEntity = guestRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No guest details found with id: " + id));
 
         guestRepository.delete(foundEntity);
 

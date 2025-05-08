@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 public class RoomDTO {
     private Long id;
 
-    @NotNull
+    @NotNull(message = "Please enter room number!")
     private Integer roomNumber;
 
-    @NotNull
+    @NotNull(message = "Please specify room type!")
     private String roomType;
 
-    @NotNull
+    @NotNull(message = "Floor number field is empty!")
     private Integer floorNumber;
 
 }

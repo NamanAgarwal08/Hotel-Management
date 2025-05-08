@@ -10,7 +10,7 @@ public interface GuestServiceInterface {
 
     List<GuestDTO> getAllGuests();
 
-    GuestDTO getGuest(Long id);
+    GuestDTO getGuest(String email);
 
     GuestDTO updateGuest(Long id, GuestDTO newDto);
 

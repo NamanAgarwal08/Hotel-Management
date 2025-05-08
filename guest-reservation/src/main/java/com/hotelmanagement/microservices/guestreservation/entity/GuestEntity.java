@@ -16,8 +16,12 @@ public class GuestEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(unique = true)
     private String memberCode;
+
     private String name;
+
+    @Column(unique = true)
     private String email;
     private Long phone;
     private String gender;

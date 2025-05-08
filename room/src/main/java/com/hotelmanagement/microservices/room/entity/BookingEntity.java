@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 
 @Entity
-@Table(name = "bookings")
+@Table(name = "bookings",
+uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"roomNumber", "checkInDate", "checkOutDate"})
+})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +23,6 @@ public class BookingEntity {
     private String checkInDate;
     private String checkOutDate;
 
-    @Column(unique = true, nullable = false)
     private Integer roomNumber;
 
 }

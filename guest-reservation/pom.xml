@@ -12,7 +12,7 @@
 	<artifactId>guest-reservation</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>guest-reservation</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Hotel Management Case Study</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -62,6 +62,10 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>

@@ -5,6 +5,7 @@ import com.hotelmanagement.microservices.room.dto.BookingDTO;
 import com.hotelmanagement.microservices.room.dto.RoomDTO;
 import com.hotelmanagement.microservices.room.entity.BookingEntity;
 import com.hotelmanagement.microservices.room.entity.RoomEntity;
+import com.hotelmanagement.microservices.room.exception.ResourceNotFoundException;
 import com.hotelmanagement.microservices.room.repository.BookingRepository;
 import com.hotelmanagement.microservices.room.repository.RoomRepository;
 import org.modelmapper.ModelMapper;
@@ -39,20 +40,14 @@ public class RoomService implements RoomServiceInterface {
 
     @Override
     public RoomDTO getRoomByNumber(Integer roomNumber) {
-        RoomEntity foundRoom = roomRepository.findByRoomNumber(roomNumber);
-        if(foundRoom == null){
-            throw new RuntimeException("No room found with the provided room number: " + roomNumber);
-        }
+        RoomEntity foundRoom = roomRepository.findByRoomNumber(roomNumber).orElseThrow(() -> new ResourceNotFoundException("No room found with the provided room number: " + roomNumber));
 
         return modelMapper.map(foundRoom, RoomDTO.class);
     }
 
     @Override
     public RoomDTO updateRoomDetails(Integer roomNumber, RoomDTO newRoomDTO) {
-        RoomEntity foundRoom = roomRepository.findByRoomNumber(roomNumber);
-        if(foundRoom == null){
-            throw new RuntimeException("No room found with the provided room number: " + roomNumber);
-        }
+        RoomEntity foundRoom = roomRepository.findByRoomNumber(roomNumber).orElseThrow(() -> new ResourceNotFoundException("No room found with the provided room number: " + roomNumber));
 
         modelMapper.map(newRoomDTO, foundRoom);
         roomRepository.save(foundRoom);
@@ -62,10 +57,7 @@ public class RoomService implements RoomServiceInterface {
 
     @Override
     public String deleteRoom(Integer roomNumber) {
-        RoomEntity foundRoom = roomRepository.findByRoomNumber(roomNumber);
-        if(foundRoom == null){
-            throw new RuntimeException("No room found with the provided room number: " + roomNumber);
-        }
+        RoomEntity foundRoom = roomRepository.findByRoomNumber(roomNumber).orElseThrow(() -> new ResourceNotFoundException("No room found with the provided room number: " + roomNumber));
 
         roomRepository.delete(foundRoom);
 

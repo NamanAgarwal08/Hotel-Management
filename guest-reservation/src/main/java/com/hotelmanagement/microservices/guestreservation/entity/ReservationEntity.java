@@ -7,16 +7,16 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
 import java.util.List;
 import jakarta.persistence.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "entities")
+@Table(name = "reservations", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"roomNumbers", "checkInDate", "checkOutDate"})
+})
 public class ReservationEntity {
 
     @Id
@@ -24,18 +24,13 @@ public class ReservationEntity {
     private Long Id;
     private Long guestId;
 
-    @ElementCollection
-    @CollectionTable(name = "reservation_rooms", joinColumns = @JoinColumn(name = "reservation_id"))
-    @Column(name = "room_number")
     private List<Integer> roomNumbers;
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate checkInDate;
+    private String checkInDate;
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate checkOutDate;
+    private String checkOutDate;
 
-    private int numberOfAdults;
-    private int numberOfChildren;
+    private Integer numberOfAdults;
+    private Integer numberOfChildren;
 
 }

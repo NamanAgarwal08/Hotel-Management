@@ -1,11 +1,11 @@
-package com.hotelmanagement.microservices.guestreservation.configuration;
+package com.hotelmanagement.microservices.guestreservation.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class Config {
+public class AppConfig {
 
     @Bean
     public ModelMapper createMapper(){

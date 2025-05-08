@@ -1,15 +1,16 @@
 package com.hotelmanagement.microservices.guestreservation.controller;
 
+import com.hotelmanagement.microservices.guestreservation.dto.ApiResponse;
 import com.hotelmanagement.microservices.guestreservation.dto.GuestDTO;
 import com.hotelmanagement.microservices.guestreservation.service.GuestServiceInterface;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+
 @RestController
 @RequestMapping("/guests")
 public class GuestController {
@@ -19,27 +20,33 @@ public class GuestController {
 
 
     @PostMapping
-    public GuestDTO addGuest(@Valid @RequestBody GuestDTO guestDto){
-        return guestServiceInterface.addGuest(guestDto);
+    public ResponseEntity<ApiResponse<GuestDTO>> addGuest(@Valid @RequestBody GuestDTO guestDto){
+        GuestDTO responseDTO = guestServiceInterface.addGuest(guestDto);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Guest entity added successfully!", responseDTO));
     }
 
     @GetMapping
-    public List<GuestDTO> getAllGuests(){
-        return guestServiceInterface.getAllGuests();
+    public ResponseEntity<ApiResponse<List<GuestDTO>>> getAllGuests(){
+       List<GuestDTO> guestList = guestServiceInterface.getAllGuests();
+       return ResponseEntity.ok(new ApiResponse<>(true, "List fetched from database!", guestList));
     }
 
-    @GetMapping("/{id}")
-    public GuestDTO getGuest(@PathVariable Long id){
-        return guestServiceInterface.getGuest(id);
+    @GetMapping("/{email}")
+    public ResponseEntity<ApiResponse<GuestDTO>> getGuest(@PathVariable String email){
+       GuestDTO responseDTO = guestServiceInterface.getGuest(email);
+       return ResponseEntity.ok(new ApiResponse<>(true, "Guest entity found!", responseDTO));
     }
+
 
     @PatchMapping("/{id}")
-    public GuestDTO updateGuest(@PathVariable Long id, @RequestBody GuestDTO newDto){
-        return guestServiceInterface.updateGuest(id, newDto);
+    public ResponseEntity<ApiResponse<GuestDTO>> updateGuest(@PathVariable Long id, @Valid @RequestBody GuestDTO newDto){
+        GuestDTO updatedDTO = guestServiceInterface.updateGuest(id, newDto);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Guest details updated successfully!", updatedDTO));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteGuest(@PathVariable Long id){
-        return guestServiceInterface.deleteGuest(id);
+    public ResponseEntity<ApiResponse<String>> deleteGuest(@PathVariable Long id){
+        String responseData =  guestServiceInterface.deleteGuest(id);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Guest entity deleted successfully!", responseData));
     }
 }

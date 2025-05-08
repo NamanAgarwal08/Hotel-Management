@@ -7,29 +7,39 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="api-gateway" />
         <module name="server1" />
       </profile>
-      <profile name="Annotation profile for room" enabled="true">
+      <profile name="Annotation profile for guest-reservation" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
+        <module name="auth-service" />
+        <module name="staff" />
         <module name="guest-reservation" />
         <module name="room" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ApiGateway" target="17" />
+      <module name="AuthService" target="17" />
       <module name="guest" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ApiGateway" options="-parameters" />
+      <module name="AuthService" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
+      <module name="auth-service" options="-parameters" />
       <module name="guest" options="-parameters" />
       <module name="guest-reservation" options="-parameters" />
       <module name="room" options="-parameters" />
       <module name="server1" options="-parameters" />
+      <module name="staff" options="-parameters" />
     </option>
   </component>
 </project>

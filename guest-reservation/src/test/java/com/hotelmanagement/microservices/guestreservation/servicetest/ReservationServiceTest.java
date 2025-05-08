@@ -1,6 +1,6 @@
-package com.hotelmanagement.microservices.guestreservation.testingservices;
+package com.hotelmanagement.microservices.guestreservation.servicetest;
 
-import com.hotelmanagement.microservices.guestreservation.configuration.EurekaProxy;
+import com.hotelmanagement.microservices.guestreservation.config.EurekaProxy;
 import com.hotelmanagement.microservices.guestreservation.dto.BookingDTO;
 import com.hotelmanagement.microservices.guestreservation.dto.ReservationDTO;
 import com.hotelmanagement.microservices.guestreservation.entity.ReservationEntity;

@@ -12,11 +12,16 @@ public class GuestDTO {
 
     private Long id;
     private String memberCode;
+
+    @NotNull(message = "Guest name required!")
     private String name;
 
-    @NotNull(message = "Email can not be null")
+    @NotNull(message = "Email can not be null!")
     private String email;
+
+    @NotNull(message = "Phone number required!")
     private Long phone;
+
     private String gender;
     private String address;
     private String company;

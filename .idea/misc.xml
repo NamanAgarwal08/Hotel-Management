@@ -8,6 +8,11 @@
         <option value="$PROJECT_DIR$/guest-reservation/pom.xml" />
         <option value="$PROJECT_DIR$/room/pom.xml" />
         <option value="$PROJECT_DIR$/eureka-server/pom.xml" />
+        <option value="$PROJECT_DIR$/staff/pom.xml" />
+        <option value="$PROJECT_DIR$/ApiGateway/pom.xml" />
+        <option value="$PROJECT_DIR$/AuthService/pom.xml" />
+        <option value="$PROJECT_DIR$/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/auth-service/pom.xml" />
       </list>
     </option>
   </component>
