@@ -2,6 +2,7 @@ package com.hotelmanagement.microservices.room.service;
 
 import com.hotelmanagement.microservices.room.dto.BookingDTO;
 import com.hotelmanagement.microservices.room.dto.RoomDTO;
+import com.hotelmanagement.microservices.room.exception.RoomNotAvailableException;
 
 import java.util.List;
 
@@ -18,5 +19,5 @@ public interface RoomServiceInterface {
 
     List<RoomDTO> getAvailableRooms(String checkInDate, String checkOutDate);
 
-    String bookRooms(BookingDTO bookingDTO);
+    String bookRooms(BookingDTO bookingDTO) throws RoomNotAvailableException;
 }

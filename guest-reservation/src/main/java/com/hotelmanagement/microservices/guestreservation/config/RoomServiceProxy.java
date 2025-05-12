@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "room")
-public interface EurekaProxy {
+public interface RoomServiceProxy {
 
     @PostMapping("/rooms/book")
     public ResponseEntity<ApiResponse<String>> bookRooms(@RequestBody BookingDTO bookingDTO);
+
+
 }

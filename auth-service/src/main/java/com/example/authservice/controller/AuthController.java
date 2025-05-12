@@ -60,7 +60,5 @@ public class AuthController {
 		
 		return userService.login(loginDto);
 	}
-	
-	
 
 }

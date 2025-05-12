@@ -6,6 +6,7 @@ import com.hotelmanagement.microservices.room.dto.RoomDTO;
 import com.hotelmanagement.microservices.room.entity.BookingEntity;
 import com.hotelmanagement.microservices.room.entity.RoomEntity;
 import com.hotelmanagement.microservices.room.exception.ResourceNotFoundException;
+import com.hotelmanagement.microservices.room.exception.RoomNotAvailableException;
 import com.hotelmanagement.microservices.room.repository.BookingRepository;
 import com.hotelmanagement.microservices.room.repository.RoomRepository;
 import org.modelmapper.ModelMapper;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RoomService implements RoomServiceInterface {
@@ -70,8 +73,14 @@ public class RoomService implements RoomServiceInterface {
     }
 
     @Override
-    public String bookRooms(BookingDTO bookingDTO) {
+    public String bookRooms(BookingDTO bookingDTO) throws RoomNotAvailableException {
         List<Integer> roomNumbers = bookingDTO.getRoomNumbers();
+        Set<Integer> availableRooms = getAvailableRooms(bookingDTO.getCheckInDate(), bookingDTO.getCheckOutDate()).stream().map(RoomDTO::getRoomNumber).collect(Collectors.toSet());
+        for (Integer roomNumber : roomNumbers) {
+            if(!availableRooms.contains(roomNumber)){
+                throw new RoomNotAvailableException("Specified room(s) not available for provided checkIn and checkOut dates!");
+            }
+        }
         for (Integer roomNumber : roomNumbers) {
             BookingEntity bookingEntity = modelMapper.map(bookingDTO, BookingEntity.class);
             bookingEntity.setRoomNumber(roomNumber);

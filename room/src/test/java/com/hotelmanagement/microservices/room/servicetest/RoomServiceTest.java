@@ -4,6 +4,7 @@ import com.hotelmanagement.microservices.room.dto.BookingDTO;
 import com.hotelmanagement.microservices.room.dto.RoomDTO;
 import com.hotelmanagement.microservices.room.entity.BookingEntity;
 import com.hotelmanagement.microservices.room.entity.RoomEntity;
+import com.hotelmanagement.microservices.room.exception.RoomNotAvailableException;
 import com.hotelmanagement.microservices.room.repository.BookingRepository;
 import com.hotelmanagement.microservices.room.repository.RoomRepository;
 import com.hotelmanagement.microservices.room.service.RoomService;
@@ -64,7 +65,7 @@ public class RoomServiceTest {
     }
 
     @Test
-    void testBookRooms() {
+    void testBookRooms() throws RoomNotAvailableException {
         BookingDTO bookingDTO = new BookingDTO();
         bookingDTO.setRoomNumbers(List.of(101, 102));
 

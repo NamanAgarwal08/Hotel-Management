@@ -56,10 +56,6 @@ public class JwtServiceImpl implements JwtService{
 	public boolean isTokenExpired(String token) {
 
 		boolean result = extractClaim(token, Claims::getExpiration).before(new Date());
-		 if(result){
-			 System.out.println("Expire ho gya");
-			throw new RuntimeException("JWTJWT");
-		 }
 
 		 return result;
 	}

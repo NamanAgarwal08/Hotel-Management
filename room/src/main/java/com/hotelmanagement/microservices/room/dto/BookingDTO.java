@@ -45,6 +45,7 @@ public class BookingDTO {
             if(d2.before(d1)){
                 throw new InvalidDateException("CheckOutDate should be after CheckInDate!");
             }
+            this.checkOutDate = checkOutDate;
         }catch(ParseException e){
             throw new InvalidDateException("CheckOutDate invalid or in incorrect format(yyyy-MM-dd)!");
         }catch (InvalidDateException e){

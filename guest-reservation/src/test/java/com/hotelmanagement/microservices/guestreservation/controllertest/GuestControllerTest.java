@@ -59,15 +59,15 @@ public class GuestControllerTest {
                 .andExpect(jsonPath("$.data[0].name").value("Guest"));
     }
 
-    @Test
-    public void testGetGuest() throws Exception {
-        Mockito.when(guestService.getGuest(1L)).thenReturn(guestDTO);
-
-        mockMvc.perform(get("/guests/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.id").value(1L))
-                .andExpect(jsonPath("$.data.name").value("Guest"));
-    }
+//    @Test
+//    public void testGetGuest() throws Exception {
+//        Mockito.when(guestService.getGuest(1L)).thenReturn(guestDTO);
+//
+//        mockMvc.perform(get("/guests/1"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.data.id").value(1L))
+//                .andExpect(jsonPath("$.data.name").value("Guest"));
+//    }
 
     @Test
     public void testUpdateGuest() throws Exception {

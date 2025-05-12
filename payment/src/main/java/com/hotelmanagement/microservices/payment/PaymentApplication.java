@@ -1,13 +1,13 @@
-package com.example.apigateway;
+package com.hotelmanagement.microservices.payment;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApiGatewayApplication {
+public class PaymentApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ApiGatewayApplication.class, args);
+		SpringApplication.run(PaymentApplication.class, args);
 	}
 
 }

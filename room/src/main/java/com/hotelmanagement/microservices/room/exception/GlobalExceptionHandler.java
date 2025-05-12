@@ -37,6 +37,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ApiResponse<>(false, e.getMessage(), null), HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(RoomNotAvailableException.class)
+    public ResponseEntity<ApiResponse<String>> handleRoomNotAvailableException(RoomNotAvailableException e){
+        return new ResponseEntity<>(new ApiResponse<>(false, e.getMessage(), null), HttpStatus.OK);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleException(Exception e){
         return new ResponseEntity<>(new ApiResponse<>(false, e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);

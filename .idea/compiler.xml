@@ -10,15 +10,25 @@
         <module name="api-gateway" />
         <module name="server1" />
       </profile>
-      <profile name="Annotation profile for guest-reservation" enabled="true">
+      <profile name="Annotation profile for staff" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+        </processorPath>
+        <module name="staff" />
+      </profile>
+      <profile name="Annotation profile for payment" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
+        <module name="payment" />
         <module name="auth-service" />
-        <module name="staff" />
         <module name="guest-reservation" />
         <module name="room" />
       </profile>
@@ -37,6 +47,7 @@
       <module name="auth-service" options="-parameters" />
       <module name="guest" options="-parameters" />
       <module name="guest-reservation" options="-parameters" />
+      <module name="payment" options="-parameters" />
       <module name="room" options="-parameters" />
       <module name="server1" options="-parameters" />
       <module name="staff" options="-parameters" />

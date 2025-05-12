@@ -23,7 +23,7 @@ public class AuthServiceApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		
-		if(userRepository.findByFirstName("admin") == null) {
+		if(userRepository.findByEmail("admin@gmail.com") == null) {
 			
 			UserEntity admin = new UserEntity();
 			

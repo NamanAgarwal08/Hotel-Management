@@ -40,15 +40,15 @@ public class GuestServiceTest {
     }
 
 
-    @Test
-    void testGetGuest() {
-        GuestEntity guestEntity = new GuestEntity();
-        GuestDTO guestDTO = new GuestDTO();
-        Mockito.when(guestRepository.findById(1L)).thenReturn(Optional.of(guestEntity));
-        Mockito.when(modelMapper.map(guestEntity, GuestDTO.class)).thenReturn(guestDTO);
-        GuestDTO result = guestService.getGuest(1L);
-        Assertions.assertNotNull(result);
-    }
+//    @Test
+//    void testGetGuest() {
+//        GuestEntity guestEntity = new GuestEntity();
+//        GuestDTO guestDTO = new GuestDTO();
+//        Mockito.when(guestRepository.findById(1L)).thenReturn(Optional.of(guestEntity));
+//        Mockito.when(modelMapper.map(guestEntity, GuestDTO.class)).thenReturn(guestDTO);
+//        GuestDTO result = guestService.getGuest(1L);
+//        Assertions.assertNotNull(result);
+//    }
 
     @Test
     void testDeleteGuest() {

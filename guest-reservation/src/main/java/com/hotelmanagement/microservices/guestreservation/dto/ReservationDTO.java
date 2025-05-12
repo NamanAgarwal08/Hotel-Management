@@ -36,6 +36,8 @@ public class ReservationDTO {
     @NotNull(message = "Specify number of children!")
     private Integer numberOfChildren;
 
+    private Boolean status;
+
     public void setCheckInDate(String checkInDate) throws InvalidDateException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try{
@@ -55,6 +57,7 @@ public class ReservationDTO {
             if(d2.before(d1)){
                 throw new InvalidDateException("CheckOutDate should be after CheckInDate!");
             }
+            this.checkOutDate = checkOutDate;
         }catch(ParseException e){
             throw new InvalidDateException("CheckOutDate invalid or in incorrect format(yyyy-MM-dd)!");
         }catch (InvalidDateException e){

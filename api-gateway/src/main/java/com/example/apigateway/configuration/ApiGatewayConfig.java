@@ -22,9 +22,10 @@ public class ApiGatewayConfig {
 							       .uri("lb://AUTH-SERVICE"))
 					  .route(p -> p.path("/staff/**")
 							       .uri("lb://STAFF"))
+				      .route(p -> p.path("/payment/**")
+						           .uri("lb://PAYMENT"))
 					  .build();
 					  
 	}
 	
 }
-
