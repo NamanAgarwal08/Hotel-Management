@@ -25,4 +25,6 @@ public class BookingEntity {
 
     private Integer roomNumber;
 
+    private String status ;
+
 }

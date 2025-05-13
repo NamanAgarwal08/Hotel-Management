@@ -72,8 +72,8 @@ public class RoomServiceTest {
         Mockito.when(modelMapper.map(bookingDTO, BookingEntity.class))
                 .thenReturn(new BookingEntity());
 
-        String result = roomService.bookRooms(bookingDTO);
-        Assertions.assertEquals("Bookings Confirmed!", result);
+        List<Long> result = roomService.bookRooms(bookingDTO);
+        Assertions.assertEquals(List.of(), result);
     }
 }
 

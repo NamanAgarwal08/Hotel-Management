@@ -19,5 +19,5 @@ public interface RoomServiceInterface {
 
     List<RoomDTO> getAvailableRooms(String checkInDate, String checkOutDate);
 
-    String bookRooms(BookingDTO bookingDTO) throws RoomNotAvailableException;
+    List<Long> bookRooms(BookingDTO bookingDTO) throws RoomNotAvailableException;
 }

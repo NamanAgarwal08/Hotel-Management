@@ -1,8 +1,11 @@
 package com.hotelmanagement.microservices.guestreservation.service;
 
+import com.hotelmanagement.microservices.guestreservation.config.PaymentServiceProxy;
 import com.hotelmanagement.microservices.guestreservation.config.RoomServiceProxy;
 import com.hotelmanagement.microservices.guestreservation.dto.BookingDTO;
 import com.hotelmanagement.microservices.guestreservation.dto.ReservationDTO;
+import com.hotelmanagement.microservices.guestreservation.dto.ReservationDetailsPayment;
+import com.hotelmanagement.microservices.guestreservation.dto.StripeResponse;
 import com.hotelmanagement.microservices.guestreservation.entity.ReservationEntity;
 import com.hotelmanagement.microservices.guestreservation.exception.ResourceNotFoundException;
 import com.hotelmanagement.microservices.guestreservation.exception.RoomNotAvailableException;
@@ -10,6 +13,7 @@ import com.hotelmanagement.microservices.guestreservation.repository.Reservation
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,20 +28,27 @@ public class ReservationService implements ReservationServiceInterface{
     RoomServiceProxy roomServiceProxy;
 
     @Autowired
+    PaymentServiceProxy paymentServiceProxy;
+
+    @Autowired
     ModelMapper modelMapper;
 
     @Override
-    public ReservationDTO createReservation(ReservationDTO reservation) throws RoomNotAvailableException {
+    public ResponseEntity<StripeResponse> createReservation(ReservationDTO reservation) throws RoomNotAvailableException {
         BookingDTO bookingDTO = new BookingDTO(reservation.getRoomNumbers(), reservation.getCheckInDate(), reservation.getCheckOutDate());
-//        bookRooms(bookingDTO);
-
-        if(bookRooms(bookingDTO)==null){
+        List<Long> bookingIds = bookRooms(bookingDTO);
+        if(bookingIds==null){
             throw new RoomNotAvailableException("Specified room(s) not available for the provided checkIn and checkOut dates!");
         };
 
         ReservationEntity reservationEntity = modelMapper.map(reservation, ReservationEntity.class);
+        reservationEntity.setStatus("PENDING");
         ReservationEntity savedReservation = reservationRepository.save(reservationEntity);
-        return modelMapper.map(savedReservation, ReservationDTO.class);
+
+        ReservationDetailsPayment reservationDetailsPayment = new ReservationDetailsPayment(bookingIds.get(bookingIds.size()-1),reservation.getRoomNumbers(),bookingIds,"INR");
+//        return modelMapper.map(savedReservation, ReservationDTO.class);
+
+        return paymentServiceProxy.makePayment(reservationDetailsPayment,savedReservation.getId());
     }
 
     @Override
@@ -71,7 +82,7 @@ public class ReservationService implements ReservationServiceInterface{
     }
 
     @Override
-    public String bookRooms(BookingDTO bookingDTO) {
+    public List<Long> bookRooms(BookingDTO bookingDTO) {
         return roomServiceProxy.bookRooms(bookingDTO).getBody().getData();
     }
 

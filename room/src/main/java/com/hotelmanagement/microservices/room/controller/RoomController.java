@@ -56,8 +56,8 @@ public class RoomController {
     }
 
     @PostMapping("/book")
-    public ResponseEntity<ApiResponse<String>> bookRooms(@Valid @RequestBody BookingDTO bookingDTO) throws RoomNotAvailableException {
-        String responseData = roomServiceInterface.bookRooms(bookingDTO);
+    public ResponseEntity<ApiResponse<List<Long>>> bookRooms(@Valid @RequestBody BookingDTO bookingDTO) throws RoomNotAvailableException {
+        List<Long> responseData = roomServiceInterface.bookRooms(bookingDTO);
         return ResponseEntity.ok(new ApiResponse<>(true, "Booking confirmed!", responseData));
     }
 

@@ -22,4 +22,5 @@ public class RoomEntity {
     private String roomType;
     private Integer floorNumber;
 
+    private Long amount;
 }

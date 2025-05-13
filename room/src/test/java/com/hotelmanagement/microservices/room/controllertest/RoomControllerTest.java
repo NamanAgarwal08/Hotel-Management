@@ -110,13 +110,13 @@ public class RoomControllerTest {
 
         BookingDTO bookingDTO = new BookingDTO(List.of(101), "2025/05/03","2025/05/04" );
 
-        Mockito.when(roomService.bookRooms(bookingDTO)).thenReturn("Bookings Confirmed!");
+        Mockito.when(roomService.bookRooms(bookingDTO)).thenReturn(List.of(1L,2L));
 
         mockMvc.perform(post("/rooms/book")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(bookingDTO)))
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.data").value("Bookings Confirmed!"));
+                        .andExpect(jsonPath("$.data[0]").value(1L));
     }
 
 }

@@ -33,6 +33,6 @@ public class ReservationEntity {
     private Integer numberOfAdults;
     private Integer numberOfChildren;
 
-    private Boolean status;
+    private String status;
 
 }
