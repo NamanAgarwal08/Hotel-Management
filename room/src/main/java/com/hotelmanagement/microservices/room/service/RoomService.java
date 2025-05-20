@@ -1,13 +1,10 @@
 package com.hotelmanagement.microservices.room.service;
 
 
-import com.hotelmanagement.microservices.room.dto.BookingDTO;
 import com.hotelmanagement.microservices.room.dto.RoomDTO;
-import com.hotelmanagement.microservices.room.entity.BookingEntity;
 import com.hotelmanagement.microservices.room.entity.RoomEntity;
 import com.hotelmanagement.microservices.room.exception.ResourceNotFoundException;
 import com.hotelmanagement.microservices.room.exception.RoomNotAvailableException;
-import com.hotelmanagement.microservices.room.repository.BookingRepository;
 import com.hotelmanagement.microservices.room.repository.RoomRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +21,6 @@ public class RoomService implements RoomServiceInterface {
     @Autowired
     private RoomRepository roomRepository;
 
-    @Autowired
-    private BookingRepository bookingRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -73,30 +68,5 @@ public class RoomService implements RoomServiceInterface {
         return roomRepository.findAvailableRoomsBetweenDates(checkInDate, checkOutDate).stream().map(room -> modelMapper.map(room, RoomDTO.class)).toList();
     }
 
-    @Override
-    public List<Long> bookRooms(BookingDTO bookingDTO) throws RoomNotAvailableException {
-        List<Integer> roomNumbers = bookingDTO.getRoomNumbers();
-        Set<Integer> availableRooms = getAvailableRooms(bookingDTO.getCheckInDate(), bookingDTO.getCheckOutDate()).stream().map(RoomDTO::getRoomNumber).collect(Collectors.toSet());
-        List<Long> bookingIds = new ArrayList<>();
-        for (Integer roomNumber : roomNumbers) {
-            if(!availableRooms.contains(roomNumber)){
-                throw new RoomNotAvailableException("Specified room(s) not available for provided checkIn and checkOut dates!");
-            }
-        }
-        Long amount = 0L;
-        for(int i=0;i<roomNumbers.size();i++){
-            amount+=getRoomByNumber(roomNumbers.get(i)).getAmount();
-        }
-
-        for (Integer roomNumber : roomNumbers) {
-            BookingEntity bookingEntity = modelMapper.map(bookingDTO, BookingEntity.class);
-            bookingEntity.setRoomNumber(roomNumber);
-            bookingEntity.setStatus("PENDING");
-            BookingEntity bookedEntity = bookingRepository.save(bookingEntity);
-            bookingIds.add(bookedEntity.getId());
-        }
-        bookingIds.add(amount); // last index is of amount
-        return bookingIds;
-    }
 
 }

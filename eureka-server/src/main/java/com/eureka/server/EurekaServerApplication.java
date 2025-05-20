@@ -1,4 +1,4 @@
-package com.eureka.server.server1;
+package com.eureka.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

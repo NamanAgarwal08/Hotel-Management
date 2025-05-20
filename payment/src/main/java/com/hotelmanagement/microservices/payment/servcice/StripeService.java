@@ -22,7 +22,7 @@ public class StripeService implements StripeServiceInterface {
     private String stripeApiKey;
 
     @Override
-    public StripeResponse makePayment(ReservationDetails reservationDetails, Long id){
+    public StripeResponse makePayment(ReservationDetails reservationDetails){
 
 
 
@@ -47,7 +47,7 @@ public class StripeService implements StripeServiceInterface {
                         .build();
 
         SessionCreateParams params = SessionCreateParams.builder().setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:8084/payment/success?sessionId={CHECKOUT_SESSION_ID}?reservationId={id}")
+                .setSuccessUrl("http://localhost:8084/payment/success?sessionId={CHECKOUT_SESSION_ID}")
                 .setCancelUrl("http://localhost:8084/payment/cancel?sessionId={CHECKOUT_SESSION_ID}")
                 .addLineItem(lineItem)
                 .build();
@@ -57,12 +57,13 @@ public class StripeService implements StripeServiceInterface {
 
         try{
             session = Session.create(params);
+            status = "SUCCESS";
         }catch (StripeException e) {
             throw new RuntimeException(e);
         }
 
         StripeResponse sessionResponse = StripeResponse.builder()
-                .status("SUCCESS")
+                .status(status)
                 .message("PAYMENT session created!")
                 .sessionId(session.getId())
                 .sessionUrl(session.getUrl())
@@ -71,9 +72,11 @@ public class StripeService implements StripeServiceInterface {
 
         PaymentEntity paymentEntity = new PaymentEntity();
         paymentEntity.setSessionId(session.getId());
-        paymentEntity.setBookingIds(reservationDetails.getBookingIds());
-        paymentEntity.setRooms(reservationDetails.getRooms());
+        paymentEntity.setAmount(reservationDetails.getAmount());
         paymentEntity.setStatus("PENDING");
+        paymentEntity.setRooms(reservationDetails.getRooms());
+        paymentEntity.setCheckInDate(reservationDetails.getCheckInDate());
+        paymentEntity.setCheckOutDate(reservationDetails.getCheckOutDate());
 
         paymentRepository.save(paymentEntity);
 

@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(value = "guest-reservation")
 public interface GuestReservationProxy {
-    @PostMapping("changestatus/{id}")
-    public void changeStatus(@PathVariable Long id);
+    @PostMapping("/reservations/changestatus/{sessionId}/{status}")
+    public void changeStatus(@PathVariable String sessionId, @PathVariable String status);
 }

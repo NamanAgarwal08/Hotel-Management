@@ -2,7 +2,6 @@ package com.hotelmanagement.microservices.room.controllertest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotelmanagement.microservices.room.controller.RoomController;
-import com.hotelmanagement.microservices.room.dto.BookingDTO;
 import com.hotelmanagement.microservices.room.dto.RoomDTO;
 import com.hotelmanagement.microservices.room.service.RoomService;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +33,7 @@ public class RoomControllerTest {
 
     @BeforeEach
     public void setUp(){
-        this.roomDTO = new RoomDTO(1L, 101, "Normal", 1);
+        this.roomDTO = new RoomDTO(1L, 101, "Normal", 1, 1000L);
     }
 
     @Test
@@ -103,20 +102,6 @@ public class RoomControllerTest {
                 .andExpect(jsonPath("$.data.size()").value(1))
                 .andExpect(jsonPath("$.data[0].roomNumber").value(101))
                 .andExpect(jsonPath("$.data[0].roomType").value("Normal"));
-    }
-
-    @Test
-    public void testBookRooms() throws Exception{
-
-        BookingDTO bookingDTO = new BookingDTO(List.of(101), "2025/05/03","2025/05/04" );
-
-        Mockito.when(roomService.bookRooms(bookingDTO)).thenReturn(List.of(1L,2L));
-
-        mockMvc.perform(post("/rooms/book")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(bookingDTO)))
-                        .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.data[0]").value(1L));
     }
 
 }

@@ -1,11 +1,8 @@
 package com.hotelmanagement.microservices.room.servicetest;
 
-import com.hotelmanagement.microservices.room.dto.BookingDTO;
 import com.hotelmanagement.microservices.room.dto.RoomDTO;
-import com.hotelmanagement.microservices.room.entity.BookingEntity;
 import com.hotelmanagement.microservices.room.entity.RoomEntity;
 import com.hotelmanagement.microservices.room.exception.RoomNotAvailableException;
-import com.hotelmanagement.microservices.room.repository.BookingRepository;
 import com.hotelmanagement.microservices.room.repository.RoomRepository;
 import com.hotelmanagement.microservices.room.service.RoomService;
 import org.junit.jupiter.api.Assertions;
@@ -26,8 +23,6 @@ public class RoomServiceTest {
     @Mock
     private RoomRepository roomRepository;
 
-//    @Mock
-//    private BookingRepository bookingRepository;
 
     @Mock
     private ModelMapper modelMapper;
@@ -64,16 +59,5 @@ public class RoomServiceTest {
         Assertions.assertEquals("Room details of room number 101 deleted", result);
     }
 
-    @Test
-    void testBookRooms() throws RoomNotAvailableException {
-        BookingDTO bookingDTO = new BookingDTO();
-        bookingDTO.setRoomNumbers(List.of(101, 102));
-
-        Mockito.when(modelMapper.map(bookingDTO, BookingEntity.class))
-                .thenReturn(new BookingEntity());
-
-        List<Long> result = roomService.bookRooms(bookingDTO);
-        Assertions.assertEquals(List.of(), result);
-    }
 }
 

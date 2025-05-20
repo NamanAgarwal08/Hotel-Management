@@ -25,25 +25,33 @@ public class PaymentController {
     @Autowired
     GuestReservationProxy guestReservationProxy;
 
-    @PostMapping("/checkout/{id}")
-    public ResponseEntity<StripeResponse> makePayment(@Valid @RequestBody ReservationDetails reservationDetails, @PathVariable Long id){
-        return ResponseEntity.ok(stripeServiceInterface.makePayment(reservationDetails, id));
+    @PostMapping("/checkout")
+    public ResponseEntity<StripeResponse> makePayment(@Valid @RequestBody ReservationDetails reservationDetails){
+        return ResponseEntity.ok(stripeServiceInterface.makePayment(reservationDetails));
     }
 
     @GetMapping("/success")
-    public PaymentEntity successMsg(@RequestParam String sessionId, @RequestParam Long id){
+    public PaymentEntity successMsg(@RequestParam String sessionId){
         PaymentEntity paymentEntity = paymentRepository.findBySessionId(sessionId);
 
-        guestReservationProxy.changeStatus(id);
-
         paymentEntity.setStatus("SUCCESS");
+        paymentRepository.save(paymentEntity);
+
+        guestReservationProxy.changeStatus(sessionId, "SUCCESS");
+
         return paymentEntity;
     }
 
     @GetMapping("/cancel")
-    public String cancelMsg(){
-        return "Payment Unsuccessful";
-    }
+    public PaymentEntity cancelMsg(@RequestParam String sessionId){
+        PaymentEntity paymentEntity = paymentRepository.findBySessionId(sessionId);
 
+        paymentEntity.setStatus("CANCELLED");
+        paymentRepository.save(paymentEntity);
+
+        guestReservationProxy.changeStatus(sessionId, "CANCELED");
+
+        return paymentEntity;
+    }
 
 }

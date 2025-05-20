@@ -2,21 +2,25 @@ package com.hotelmanagement.microservices.guestreservation.service;
 
 import com.hotelmanagement.microservices.guestreservation.config.PaymentServiceProxy;
 import com.hotelmanagement.microservices.guestreservation.config.RoomServiceProxy;
-import com.hotelmanagement.microservices.guestreservation.dto.BookingDTO;
 import com.hotelmanagement.microservices.guestreservation.dto.ReservationDTO;
 import com.hotelmanagement.microservices.guestreservation.dto.ReservationDetailsPayment;
+import com.hotelmanagement.microservices.guestreservation.dto.RoomDTO;
 import com.hotelmanagement.microservices.guestreservation.dto.StripeResponse;
 import com.hotelmanagement.microservices.guestreservation.entity.ReservationEntity;
+import com.hotelmanagement.microservices.guestreservation.exception.FeignServiceUnavailableException;
 import com.hotelmanagement.microservices.guestreservation.exception.ResourceNotFoundException;
 import com.hotelmanagement.microservices.guestreservation.exception.RoomNotAvailableException;
 import com.hotelmanagement.microservices.guestreservation.repository.ReservationRepository;
 
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService implements ReservationServiceInterface{
@@ -34,21 +38,42 @@ public class ReservationService implements ReservationServiceInterface{
     ModelMapper modelMapper;
 
     @Override
-    public ResponseEntity<StripeResponse> createReservation(ReservationDTO reservation) throws RoomNotAvailableException {
-        BookingDTO bookingDTO = new BookingDTO(reservation.getRoomNumbers(), reservation.getCheckInDate(), reservation.getCheckOutDate());
-        List<Long> bookingIds = bookRooms(bookingDTO);
-        if(bookingIds==null){
-            throw new RoomNotAvailableException("Specified room(s) not available for the provided checkIn and checkOut dates!");
-        };
+    public StripeResponse createReservation(ReservationDTO reservation) throws RoomNotAvailableException, FeignServiceUnavailableException {
+        List<RoomDTO> availableRooms;
+        try{
+            availableRooms = checkAvailability(reservation.getCheckInDate(), reservation.getCheckOutDate());
+        }catch(FeignServiceUnavailableException e){
+            throw new FeignServiceUnavailableException("Room Service is temporarily down!");
+        }
+
+
+        Map<Integer, Long> availableRoomNumbers = availableRooms.stream().collect(Collectors.toMap(RoomDTO::getRoomNumber, RoomDTO::getAmount));
+
+        Long amount = 0L;
+
+        for(int i=0;i<reservation.getRoomNumbers().size();i++){
+            if(!availableRoomNumbers.containsKey(reservation.getRoomNumbers().get(i))){
+                throw new RoomNotAvailableException("Specified room(s) not available for booking!");
+            }else{
+                amount+=availableRoomNumbers.get(reservation.getRoomNumbers().get(i));
+            }
+        }
+
+        StripeResponse stripeResponse;
+
+        try{
+            ReservationDetailsPayment reservationDetailsPayment = new ReservationDetailsPayment(amount, "INR", reservation.getRoomNumbers(), reservation.getCheckInDate(), reservation.getCheckOutDate());
+            stripeResponse = paymentServiceProxy.makePayment(reservationDetailsPayment).getBody();
+        }catch (Exception e){
+            throw new FeignServiceUnavailableException("Payment Service is temporarily down!");
+        }
 
         ReservationEntity reservationEntity = modelMapper.map(reservation, ReservationEntity.class);
         reservationEntity.setStatus("PENDING");
-        ReservationEntity savedReservation = reservationRepository.save(reservationEntity);
+        reservationEntity.setSessionId(stripeResponse.getSessionId());
+        reservationRepository.save(reservationEntity);
 
-        ReservationDetailsPayment reservationDetailsPayment = new ReservationDetailsPayment(bookingIds.get(bookingIds.size()-1),reservation.getRoomNumbers(),bookingIds,"INR");
-//        return modelMapper.map(savedReservation, ReservationDTO.class);
-
-        return paymentServiceProxy.makePayment(reservationDetailsPayment,savedReservation.getId());
+        return stripeResponse;
     }
 
     @Override
@@ -82,8 +107,28 @@ public class ReservationService implements ReservationServiceInterface{
     }
 
     @Override
-    public List<Long> bookRooms(BookingDTO bookingDTO) {
-        return roomServiceProxy.bookRooms(bookingDTO).getBody().getData();
+    public List<RoomDTO> checkAvailability(String checkInDate, String checkOutDate) throws FeignServiceUnavailableException {
+        List<RoomDTO> allRooms;
+        try{
+            allRooms = roomServiceProxy.getAllRooms().getBody().getData();
+        }catch(Exception e){
+            throw new FeignServiceUnavailableException("Room Service is temporarily down!");
+        }
+
+        Set<Integer> allRoomNumbers = allRooms.stream().map(room -> room.getRoomNumber()).collect(Collectors.toSet());
+
+        List<ReservationEntity> overlapped = reservationRepository.checkAvailability(checkInDate, checkOutDate);
+
+        for(ReservationEntity re : overlapped){
+            List<Integer> rooms = re.getRoomNumbers();
+            for(Integer roomNumber : rooms){
+                if(allRoomNumbers.contains(roomNumber)){
+                    allRoomNumbers.remove(roomNumber);
+                }
+            }
+        }
+
+        return allRooms.stream().filter(room -> allRoomNumbers.contains(room.getRoomNumber())).toList();
     }
 
 }

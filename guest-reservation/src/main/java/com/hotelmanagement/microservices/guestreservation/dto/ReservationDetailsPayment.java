@@ -12,8 +12,9 @@ import java.util.List;
 public class ReservationDetailsPayment {
 
     private Long amount;
-    private List<Integer> rooms;
-    private List<Long> bookingIds;
     private String currency;
+    private List<Integer> rooms;
+    private String checkInDate;
+    private String checkOutDate;
 
 }

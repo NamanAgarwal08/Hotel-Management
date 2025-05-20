@@ -21,8 +21,10 @@ public class PaymentEntity {
     private Long id;
 
     private String sessionId;
-    private List<Integer> rooms;
-    private List<Long> bookingIds;
+    private Long amount;
     private String status;
+    private List<Integer> rooms;
+    private String checkInDate;
+    private String checkOutDate;
 
 }

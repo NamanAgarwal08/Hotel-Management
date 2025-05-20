@@ -5,6 +5,6 @@ import com.hotelmanagement.microservices.payment.dto.StripeResponse;
 
 public interface StripeServiceInterface {
 
-    public StripeResponse makePayment(ReservationDetails reservationDetails, Long id);
+    public StripeResponse makePayment(ReservationDetails reservationDetails);
 
 }

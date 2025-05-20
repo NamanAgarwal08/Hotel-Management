@@ -33,6 +33,8 @@ public class ReservationEntity {
     private Integer numberOfAdults;
     private Integer numberOfChildren;
 
+    private String sessionId;
+
     private String status;
 
 }

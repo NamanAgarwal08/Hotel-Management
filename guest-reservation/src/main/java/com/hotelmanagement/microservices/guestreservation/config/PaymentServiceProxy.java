@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(value = "payment")
 public interface PaymentServiceProxy {
 
-    @PostMapping("/checkout/{id}")
-    public ResponseEntity<StripeResponse> makePayment(@Valid @RequestBody ReservationDetailsPayment reservationDetails, @PathVariable Long id);
+    @PostMapping("/payment/checkout")
+    public ResponseEntity<StripeResponse> makePayment(@Valid @RequestBody ReservationDetailsPayment reservationDetails);
 
 }
