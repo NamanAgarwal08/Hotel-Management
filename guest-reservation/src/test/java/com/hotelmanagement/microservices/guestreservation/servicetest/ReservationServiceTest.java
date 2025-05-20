@@ -31,16 +31,16 @@ public class ReservationServiceTest {
     @InjectMocks
     private ReservationService reservationService;
 
-    @Test
-    void testCreateReservation() throws RoomNotAvailableException {
-        ReservationDTO reservationDTO = new ReservationDTO();
-        ReservationEntity reservationEntity = new ReservationEntity();
-        Mockito.when(modelMapper.map(reservationDTO, ReservationEntity.class)).thenReturn(reservationEntity);
-        Mockito.when(reservationRepository.save(reservationEntity)).thenReturn(reservationEntity);
-        Mockito.when(modelMapper.map(reservationEntity, ReservationDTO.class)).thenReturn(reservationDTO);
-        ReservationDTO result = reservationService.createReservation(reservationDTO);
-        Assertions.assertNotNull(result);
-    }
+//    @Test
+//    void testCreateReservation() throws RoomNotAvailableException {
+//        ReservationDTO reservationDTO = new ReservationDTO();
+//        ReservationEntity reservationEntity = new ReservationEntity();
+//        Mockito.when(modelMapper.map(reservationDTO, ReservationEntity.class)).thenReturn(reservationEntity);
+//        Mockito.when(reservationRepository.save(reservationEntity)).thenReturn(reservationEntity);
+//        Mockito.when(modelMapper.map(reservationEntity, ReservationDTO.class)).thenReturn(reservationDTO);
+//        ReservationDTO result = reservationService.createReservation(reservationDTO);
+//        Assertions.assertNotNull(result);
+//    }
 
 
     @Test

@@ -1,9 +1,7 @@
 package com.hotelmanagement.microservices.room.controller;
 
 import com.hotelmanagement.microservices.room.dto.ApiResponse;
-import com.hotelmanagement.microservices.room.dto.BookingDTO;
 import com.hotelmanagement.microservices.room.dto.RoomDTO;
-import com.hotelmanagement.microservices.room.exception.RoomNotAvailableException;
 import com.hotelmanagement.microservices.room.service.RoomServiceInterface;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +51,6 @@ public class RoomController {
     public ResponseEntity<ApiResponse<List<RoomDTO>>> getAvailableRooms(@RequestParam String checkInDate, @RequestParam String checkOutDate){
         List<RoomDTO> availableRooms = roomServiceInterface.getAvailableRooms(checkInDate, checkOutDate);
         return ResponseEntity.ok(new ApiResponse<>(true, "Rooms found!", availableRooms));
-    }
-
-    @PostMapping("/book")
-    public ResponseEntity<ApiResponse<String>> bookRooms(@Valid @RequestBody BookingDTO bookingDTO) throws RoomNotAvailableException {
-        String responseData = roomServiceInterface.bookRooms(bookingDTO);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Booking confirmed!", responseData));
     }
 
 }

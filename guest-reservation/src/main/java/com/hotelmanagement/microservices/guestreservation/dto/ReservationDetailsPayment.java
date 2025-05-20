@@ -1,4 +1,4 @@
-package com.hotelmanagement.microservices.payment.dto;
+package com.hotelmanagement.microservices.guestreservation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationDetails {
+public class ReservationDetailsPayment {
 
     private Long amount;
     private String currency;

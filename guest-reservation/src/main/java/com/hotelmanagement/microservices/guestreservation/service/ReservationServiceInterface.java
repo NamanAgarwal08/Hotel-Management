@@ -1,14 +1,17 @@
 package com.hotelmanagement.microservices.guestreservation.service;
 
 
-import com.hotelmanagement.microservices.guestreservation.dto.BookingDTO;
 import com.hotelmanagement.microservices.guestreservation.dto.ReservationDTO;
+import com.hotelmanagement.microservices.guestreservation.dto.RoomDTO;
+import com.hotelmanagement.microservices.guestreservation.dto.StripeResponse;
+import com.hotelmanagement.microservices.guestreservation.exception.FeignServiceUnavailableException;
 import com.hotelmanagement.microservices.guestreservation.exception.RoomNotAvailableException;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface ReservationServiceInterface {
-    ReservationDTO createReservation(ReservationDTO reservation) throws RoomNotAvailableException;
+    StripeResponse createReservation(ReservationDTO reservation) throws RoomNotAvailableException, FeignServiceUnavailableException;
 
     List<ReservationDTO> getAllReservations();
 
@@ -18,5 +21,5 @@ public interface ReservationServiceInterface {
 
     String deleteReservation(Long id);
 
-    String bookRooms(BookingDTO bookingDTO);
+    List<RoomDTO> checkAvailability(String checkInDate, String checkOutDate) throws FeignServiceUnavailableException;
 }

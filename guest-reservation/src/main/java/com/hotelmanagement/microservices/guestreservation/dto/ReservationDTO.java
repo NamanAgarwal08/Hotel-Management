@@ -36,7 +36,6 @@ public class ReservationDTO {
     @NotNull(message = "Specify number of children!")
     private Integer numberOfChildren;
 
-    private Boolean status;
 
     public void setCheckInDate(String checkInDate) throws InvalidDateException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

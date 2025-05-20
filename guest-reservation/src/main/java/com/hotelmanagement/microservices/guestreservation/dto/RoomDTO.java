@@ -1,4 +1,4 @@
-package com.hotelmanagement.microservices.room.dto;
+package com.hotelmanagement.microservices.guestreservation.dto;
 
 
 import jakarta.validation.constraints.NotBlank;

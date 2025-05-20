@@ -43,11 +43,6 @@ public class JwtFilter implements WebFilter, Ordered{
 
 		jwt = authHeader.substring(7);
 
-		if(jwtService.isTokenExpired(jwt)){
-			System.out.println("Expire ho gya token!");
-			throw new RuntimeException("Expired token!");
-		}
-
 		userEmail = jwtService.extractUserName(jwt);
 		
 		

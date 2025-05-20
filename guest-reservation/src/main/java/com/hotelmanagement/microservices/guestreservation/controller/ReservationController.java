@@ -2,11 +2,14 @@ package com.hotelmanagement.microservices.guestreservation.controller;
 
 
 import com.hotelmanagement.microservices.guestreservation.dto.ApiResponse;
-import com.hotelmanagement.microservices.guestreservation.dto.BookingDTO;
 import com.hotelmanagement.microservices.guestreservation.dto.ReservationDTO;
+import com.hotelmanagement.microservices.guestreservation.dto.RoomDTO;
+import com.hotelmanagement.microservices.guestreservation.dto.StripeResponse;
+import com.hotelmanagement.microservices.guestreservation.entity.ReservationEntity;
+import com.hotelmanagement.microservices.guestreservation.exception.FeignServiceUnavailableException;
 import com.hotelmanagement.microservices.guestreservation.exception.RoomNotAvailableException;
+import com.hotelmanagement.microservices.guestreservation.repository.ReservationRepository;
 import com.hotelmanagement.microservices.guestreservation.service.ReservationServiceInterface;
-import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +30,17 @@ public class ReservationController {
     @Autowired
     private ReservationServiceInterface reservationServiceInterface;
 
+    @Autowired
+    private ReservationRepository reservationRepository;
+
     @PostMapping
     @CircuitBreaker(name = SERVICE_NAME, fallbackMethod = "fallbackResponse")
-    public ResponseEntity<ApiResponse<ReservationDTO>> createReservation(@Valid @RequestBody ReservationDTO reservation) throws RoomNotAvailableException {
-        ReservationDTO responseDTO = reservationServiceInterface.createReservation(reservation);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Reservations details added successfully!", responseDTO));
+    public ResponseEntity<ApiResponse<StripeResponse>> createReservation(@Valid @RequestBody ReservationDTO reservation) throws RoomNotAvailableException, FeignServiceUnavailableException {
+        return ResponseEntity.ok(new ApiResponse<>(true, "Payment session created!", reservationServiceInterface.createReservation(reservation)));
+    }
+
+    public ResponseEntity<ApiResponse<String>> fallbackResponse(FeignServiceUnavailableException ex) {
+        return new ResponseEntity<>(new ApiResponse<>(false, ex.getMessage(), null), HttpStatus.BAD_GATEWAY);
     }
 
     @GetMapping
@@ -58,15 +67,18 @@ public class ReservationController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Reservation details deleted successfully!", responseData));
     }
 
-    @PostMapping("/book")
     @CircuitBreaker(name = SERVICE_NAME, fallbackMethod = "fallbackResponse")
-    public ResponseEntity<ApiResponse<String>> bookRooms(@Valid @RequestBody BookingDTO bookingDTO){
-        String responseData = reservationServiceInterface.bookRooms(bookingDTO);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Booking successful!", responseData));
+    @GetMapping("/checkavailability")
+    public ResponseEntity<ApiResponse<List<RoomDTO>>> checkAvailability(@RequestParam String checkInDate, @RequestParam String checkOutDate) throws FeignServiceUnavailableException {
+        List<RoomDTO> availableRooms = reservationServiceInterface.checkAvailability(checkInDate ,checkOutDate);
+        return ResponseEntity.ok(new ApiResponse<List<RoomDTO>>(true, "Available rooms fetched from database!" ,availableRooms));
     }
 
-    public ResponseEntity<ApiResponse<String>> fallbackResponse(FeignException ex) {
-        return new ResponseEntity<>(new ApiResponse<>(false, "Room Service is temporarily down!", null), HttpStatus.BAD_GATEWAY);
+    @PostMapping("changestatus/{sessionId}/{status}")
+    public void changeStatus(@PathVariable String sessionId, @PathVariable String status){
+        ReservationEntity reservationEntity = reservationRepository.findBySessionId(sessionId).orElseThrow(null);
+        reservationEntity.setStatus(status);
+        reservationRepository.save(reservationEntity);
     }
 
 }
